@@ -7,12 +7,12 @@ import mscalejoin.shj.PlanImpl;
 import mscalejoin.shj.ProbeImpl;
 
 public class EquiJoinSHJExperiment {
-    static final int COMMON_ATTRIBUTE=0;
-    static final int NKEY_ATTRIBUTES = 1;
+    private static final int COMMON_ATTRIBUTE = 0;
+    private static final int NKEY_ATTRIBUTES = 1;
 
     public static void main(String[] args) {
         // Setup plan
-        PlanImpl plan = new PlanImpl(Config.WINDOW_SIZE);
+        PlanImpl plan = new PlanImpl(Experiment.WINDOW_SIZE);
 
         Parser parser = (s) -> new Integer[]{Integer.parseInt(s[0]), Integer.parseInt(s[1])};
 
@@ -32,7 +32,7 @@ public class EquiJoinSHJExperiment {
         plan.addSource(Stream.U, NKEY_ATTRIBUTES, probeT, probeS, probeR);
 
         // Run the experiment
-        Experiment.run(Integer.parseInt(args[0]), plan);
-        // Experiment.run(2, plan);
+        // Experiment.run(Integer.parseInt(args[0]), plan);
+        Experiment.run(2, plan);
     }
 }

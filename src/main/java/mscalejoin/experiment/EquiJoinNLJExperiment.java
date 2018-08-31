@@ -10,7 +10,7 @@ import mscalejoin.nlj.ProbeImpl;
 public class EquiJoinNLJExperiment {
     public static void main(String[] args) {
         // Setup plan
-        PlanImpl plan = new PlanImpl(Config.WINDOW_SIZE);
+        PlanImpl plan = new PlanImpl(Experiment.WINDOW_SIZE);
 
         Predicate predicate = (a, b) -> (int) a.getAttribute(0) == (int) b.getAttribute(0);
         Parser parser = (s) -> new Integer[]{Integer.parseInt(s[0]), Integer.parseInt(s[1])};

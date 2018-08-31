@@ -9,7 +9,7 @@ public class PredicateTest {
         Tuple t2 = new Tuple(1, Stream.R, new Integer[]{3, 2, 1}, 0);
         Predicate predicate = (c, d) -> ((int) c.getAttribute(1) < (int) d.getAttribute(0));
 
-        System.out.println(compare(predicate, t1, t2));
+        assert compare(predicate, t1, t2) : "Got false instead of true";
     }
 
     private static boolean compare(Predicate c, Tuple a, Tuple b) {

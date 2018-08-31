@@ -8,7 +8,7 @@ import mscalejoin.nlj.ProbeImpl;
 import mscalejoin.nlj.WindowImpl;
 
 public class WindowImplTest {
-    static final int TEST_SIZE = 1000000;
+    private static final int TEST_SIZE = 1000000;
 
     public static void main(String[] args) {
         // Window with 2 join attributes
@@ -47,7 +47,9 @@ public class WindowImplTest {
             sum += window.probe(tuple, probe).size();
         }
 
-        System.out.println("Probing finished in " + (System.nanoTime() - start) / 1000000 + "ms, total sum is " + sum);
+        System.out.println("Probing finished in " + (System.nanoTime() - start) / 1000000 + "ms");
+
+        assert sum == TEST_SIZE : "Got " + sum + " instead of " + TEST_SIZE;
 
         // Measure expiration performance
         start = System.nanoTime();

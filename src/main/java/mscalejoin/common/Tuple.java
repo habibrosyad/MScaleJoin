@@ -3,7 +3,6 @@ package mscalejoin.common;
 import com.google.common.collect.ObjectArrays;
 import scalegate.ScaleGateTuple;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tuple implements Comparable<ScaleGateTuple>, ScaleGateTuple {

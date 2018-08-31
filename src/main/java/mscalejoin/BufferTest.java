@@ -6,10 +6,10 @@ import mscalejoin.common.Tuple;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BufferTest {
-    static final int TEST_SIZE = 1000000;
-    static final int NTHREADS = 4;
-    static Buffer buffer;
-    static AtomicInteger barrier;
+    private static final int TEST_SIZE = 1000000;
+    private static final int NTHREADS = 4;
+    private static Buffer buffer;
+    private static AtomicInteger barrier;
 
     public static void main(String[] args) throws InterruptedException {
         buffer = new Buffer(NTHREADS);
@@ -88,7 +88,7 @@ public class BufferTest {
                 }
             }
 
-            System.out.println("Consumer thread " + id + " done ");
+            System.out.println("Consumer thread " + id + " done");
         }
 
     }

@@ -13,12 +13,17 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class Experiment {
+public class Experiment {
+    static final int WINDOW_SIZE = 4000000;
+    static final long STATS_WAIT = 20000;
+    public static final long SHJ_EXPECTED_OUTPUT = 5;
+    private static final int SCALEGATE_MAXLEVELS = 10;
+
     static void run(int numberOfConsumers, Plan plan) {
         int numberOfProducers = plan.getSources().size();
 
-        ScaleGate sgin = new ScaleGateImpl(Config.SCALEGATE_MAXLEVELS, numberOfProducers, numberOfConsumers);
-        ScaleGate sgout = new ScaleGateImpl(Config.SCALEGATE_MAXLEVELS, numberOfConsumers, 1);
+        ScaleGate sgin = new ScaleGateImpl(SCALEGATE_MAXLEVELS, numberOfProducers, numberOfConsumers);
+        ScaleGate sgout = new ScaleGateImpl(SCALEGATE_MAXLEVELS, numberOfConsumers, 1);
 
         // + 1 for the stats thread
         AtomicInteger barrier = new AtomicInteger(numberOfProducers + numberOfConsumers + 1);
@@ -81,8 +86,8 @@ class Experiment {
             long start = System.nanoTime();
             //Read local file of the stream
             Stream source = plan.getSources().get(id);
-            String filename = "/Users/habib.rosyad/sandbox/mscalejoin-dataset/50/" + source + ".txt";
-//            String filename = source + "";
+            String filename = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/shj/50/" + source;
+            //String filename = source.toString();
             int timestamp = 0;
             try {
                 Scanner scanner = new Scanner(new File(filename));

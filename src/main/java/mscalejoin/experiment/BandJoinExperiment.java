@@ -19,7 +19,7 @@ public class BandJoinExperiment {
          * S.d == T.f
          */
 
-        PlanImpl plan = new PlanImpl(Config.WINDOW_SIZE);
+        PlanImpl plan = new PlanImpl(Experiment.WINDOW_SIZE);
 
         plan.addParser(Stream.R, (s) -> new Object[]{Integer.parseInt(s[0]), Float.parseFloat(s[1])});
 

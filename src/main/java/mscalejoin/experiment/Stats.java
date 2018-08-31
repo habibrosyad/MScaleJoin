@@ -13,10 +13,10 @@ public class Stats {
             while (barrier.get() != 0) ;
 
             try {
-                Thread.sleep(Config.STATS_WAIT);
+                Thread.sleep(Experiment.STATS_WAIT);
 
                 // Print report
-                System.out.println("ELAPSED=" + Config.STATS_WAIT + "ms");
+                System.out.println("ELAPSED=" + Experiment.STATS_WAIT + "ms");
                 System.out.println("OUTPUT=" + output.get());
                 System.out.println("COMPARISON=" + comparison.get());
                 System.out.println();
