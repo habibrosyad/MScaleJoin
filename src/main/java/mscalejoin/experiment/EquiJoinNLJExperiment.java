@@ -1,6 +1,7 @@
 package mscalejoin.experiment;
 
 import mscalejoin.common.Parser;
+import mscalejoin.common.Probe;
 import mscalejoin.common.Stream;
 import mscalejoin.nlj.PlanImpl;
 import mscalejoin.nlj.Predicate;
@@ -19,29 +20,15 @@ public class EquiJoinNLJExperiment {
         plan.addParser(Stream.T, parser);
         plan.addParser(Stream.U, parser);
 
-        plan.addSource(Stream.R,
-                new ProbeImpl(Stream.S, predicate),
-                new ProbeImpl(Stream.T, predicate),
-                new ProbeImpl(Stream.U, predicate)
-        );
+        Probe probeR = new ProbeImpl(Stream.R, predicate);
+        Probe probeS = new ProbeImpl(Stream.S, predicate);
+        Probe probeT = new ProbeImpl(Stream.T, predicate);
+        Probe probeU = new ProbeImpl(Stream.U, predicate);
 
-        plan.addSource(Stream.S,
-                new ProbeImpl(Stream.R, predicate),
-                new ProbeImpl(Stream.T, predicate),
-                new ProbeImpl(Stream.U, predicate)
-        );
-
-        plan.addSource(Stream.T,
-                new ProbeImpl(Stream.S, predicate),
-                new ProbeImpl(Stream.R, predicate),
-                new ProbeImpl(Stream.U, predicate)
-        );
-
-        plan.addSource(Stream.U,
-                new ProbeImpl(Stream.T, predicate),
-                new ProbeImpl(Stream.S, predicate),
-                new ProbeImpl(Stream.R, predicate)
-        );
+        plan.addSource(Stream.R, probeS, probeT, probeU);
+        plan.addSource(Stream.S, probeR, probeT, probeU);
+        plan.addSource(Stream.T, probeS, probeR, probeU);
+        plan.addSource(Stream.U, probeT, probeS, probeR);
 
         // Run the experiment
         Experiment.run(Integer.parseInt(args[0]), plan);

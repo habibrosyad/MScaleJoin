@@ -6,7 +6,19 @@ import mscalejoin.nlj.ProbeImpl;
 
 public class BandJoinExperiment {
     public static void main(String[] args) {
-        // Setup plan
+        /**
+         * 3 streams:
+         * - R(x,y) - [int, float]
+         * - S(a,b,c,d) - [int, float, double, boolean]
+         * - T(e,f) - [double, boolean]
+         *
+         * Band join predicates:
+         * R.x >= S.a - 10 AND R.x <= S.a + 10 AND
+         * R.y >= S.b - 10 AND R.y <= S.b + 10 AND
+         * S.c >= T.e - 10 AND S.c <= T.e + 10 AND
+         * S.d == T.f
+         */
+
         PlanImpl plan = new PlanImpl(Config.WINDOW_SIZE);
 
         plan.addParser(Stream.R, (s) -> new Object[]{Integer.parseInt(s[0]), Float.parseFloat(s[1])});
