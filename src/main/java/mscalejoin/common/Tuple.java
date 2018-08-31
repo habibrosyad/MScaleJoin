@@ -36,11 +36,7 @@ public class Tuple implements Comparable<ScaleGateTuple>, ScaleGateTuple {
     }
 
     public int compareCounterTo(Tuple o) {
-        if (this.counter.get() == o.getCounter()) {
-            return 0;
-        } else {
-            return this.counter.get() > o.getCounter() ? 1 : -1;
-        }
+        return compareCounterTo(o.getCounter());
     }
 
     public int compareCounterTo(int counter) {
@@ -79,10 +75,5 @@ public class Tuple implements Comparable<ScaleGateTuple>, ScaleGateTuple {
         } else {
             return this.timestamp > o.getTimestamp() ? 1 : -1;
         }
-    }
-
-    @Override
-    public String toString() {
-        return timestamp + " " + source + " " + counter.get() + " " + Arrays.toString(attributes);
     }
 }

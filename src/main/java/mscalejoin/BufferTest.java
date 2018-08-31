@@ -12,8 +12,6 @@ public class BufferTest {
     static AtomicInteger barrier;
 
     public static void main(String[] args) throws InterruptedException {
-        BufferTest test = new BufferTest();
-
         buffer = new Buffer(NTHREADS);
         barrier = new AtomicInteger(NTHREADS * 2);
 
@@ -23,8 +21,8 @@ public class BufferTest {
         Thread[] consumers = new Thread[NTHREADS];
 
         for (int i = 0; i < NTHREADS; i++) {
-            producers[i] = new Thread(test.new Producer(i));
-            consumers[i] = new Thread(test.new Consumer(i));
+            producers[i] = new Thread(new Producer(i));
+            consumers[i] = new Thread(new Consumer(i));
         }
 
         for (int i = 0; i < NTHREADS; i++) {
@@ -41,7 +39,7 @@ public class BufferTest {
         }
     }
 
-    protected class Producer implements Runnable {
+    private static class Producer implements Runnable {
         int id;
 
         Producer(int id) {
@@ -64,7 +62,7 @@ public class BufferTest {
 
     }
 
-    protected class Consumer implements Runnable {
+    private static class Consumer implements Runnable {
         int id;
 
         Consumer(int id) {
