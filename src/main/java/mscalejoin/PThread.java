@@ -47,7 +47,7 @@ public class PThread implements Runnable {
 
             // For SHJ experiment only
             if (plan.getMethod() == Method.SHJ && Stats.output.get() == Config.SHJ_EXPECTED) {
-                System.out.println("Finished in " + (System.nanoTime()-start)/1000000 + "ms");
+                System.out.println("Finished in " + (System.nanoTime() - start) / 1000000 + "ms");
                 break;
             }
         }
@@ -72,8 +72,12 @@ public class PThread implements Runnable {
 
             // Increase stats for comparison
             switch (plan.getMethod()) {
-                case NLJ: Stats.comparison.addAndGet(window.size()); break; // NLJ scan all window contents
-                case SHJ: Stats.comparison.incrementAndGet(); break; // SHJ just probe once
+                case NLJ:
+                    Stats.comparison.addAndGet(window.size());
+                    break; // NLJ scan all window contents
+                case SHJ:
+                    Stats.comparison.incrementAndGet();
+                    break; // SHJ just probe once
             }
 
             // ProbeImpl targetWindow and join
