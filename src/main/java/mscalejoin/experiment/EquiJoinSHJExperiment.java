@@ -32,7 +32,7 @@ public class EquiJoinSHJExperiment {
         plan.addSource(Stream.U, NKEY_ATTRIBUTES, probeT, probeS, probeR);
 
         // Run the experiment
-        // Experiment.run(Integer.parseInt(args[0]), plan);
-        Experiment.run(2, plan);
+        Experiment.run(Integer.parseInt(args[0]), plan);
+        //Experiment.run(2, plan);
     }
 }

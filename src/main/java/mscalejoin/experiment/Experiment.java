@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Experiment {
     static final int WINDOW_SIZE = 4000000;
     static final long STATS_WAIT = 20000;
-    public static final long SHJ_EXPECTED_OUTPUT = 5;
+    public static final long SHJ_EXPECTED_OUTPUT = 300000;
     private static final int SCALEGATE_MAXLEVELS = 10;
 
     static void run(int numberOfConsumers, Plan plan) {
@@ -86,8 +86,8 @@ public class Experiment {
             long start = System.nanoTime();
             //Read local file of the stream
             Stream source = plan.getSources().get(id);
-            String filename = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/shj/50/" + source;
-            //String filename = source.toString();
+            //String filename = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/shj/1000000/" + source;
+            String filename = source.toString();
             int timestamp = 0;
             try {
                 Scanner scanner = new Scanner(new File(filename));
