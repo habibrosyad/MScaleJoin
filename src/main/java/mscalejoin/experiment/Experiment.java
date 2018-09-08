@@ -13,17 +13,14 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Experiment {
+public abstract class Experiment {
     static final int WINDOW_SIZE = 4000000;
-    static final long STATS_WAIT = 20000;
-    public static final long SHJ_EXPECTED_OUTPUT = 300000;
-    private static final int SCALEGATE_MAXLEVELS = 10;
 
-    static void run(int numberOfConsumers, Plan plan) {
+    void run(int numberOfConsumers, Plan plan) {
         int numberOfProducers = plan.getSources().size();
 
-        ScaleGate sgin = new ScaleGateImpl(SCALEGATE_MAXLEVELS, numberOfProducers, numberOfConsumers);
-        ScaleGate sgout = new ScaleGateImpl(SCALEGATE_MAXLEVELS, numberOfConsumers, 1);
+        ScaleGate sgin = new ScaleGateImpl(10, numberOfProducers, numberOfConsumers);
+        ScaleGate sgout = new ScaleGateImpl(10, numberOfConsumers, 1);
 
         // + 1 for the stats thread
         AtomicInteger barrier = new AtomicInteger(numberOfProducers + numberOfConsumers + 1);
@@ -64,7 +61,7 @@ public class Experiment {
         }
     }
 
-    private static class Producer implements Runnable {
+    private class Producer implements Runnable {
         private final int id;
         private final AtomicInteger barrier;
         private final Plan plan;

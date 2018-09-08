@@ -17,4 +17,8 @@ public interface Plan {
     Probe getNextProbe(Tuple tuple);
 
     Map<Stream, Window> createWindows();
+
+    void setExpectedOutput(long expectedOutput);
+
+    long getExpectedOutput();
 }

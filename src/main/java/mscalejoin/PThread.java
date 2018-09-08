@@ -1,7 +1,6 @@
 package mscalejoin;
 
 import mscalejoin.common.*;
-import mscalejoin.experiment.Experiment;
 import mscalejoin.experiment.Stats;
 import scalegate.ScaleGate;
 
@@ -46,7 +45,9 @@ public class PThread implements Runnable {
             join(buffer.getNextReadyTuple(id, counter));
 
             // For SHJ experiment only
-            if (plan.getMethod() == Method.SHJ && Stats.output.get() == Experiment.SHJ_EXPECTED_OUTPUT) {
+            if (plan.getMethod() == Method.SHJ &&
+                    plan.getExpectedOutput() > 0 &&
+                    Stats.output.get() == plan.getExpectedOutput()) {
                 System.out.println("Finished in " + (System.nanoTime() - start) / 1000000 + "ms");
                 break;
             }
