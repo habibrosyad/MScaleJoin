@@ -4,24 +4,25 @@ import mscalejoin.common.Stream;
 import mscalejoin.nlj.PlanImpl;
 import mscalejoin.nlj.ProbeImpl;
 
-public class BandJoinExperiment extends Experiment {
-    public static void main(String[] args) {
-        // Three streams:
-        // R[x,y] [int,float]
-        // S[a,b,c,d] [int,float,double,boolean]
-        // T[e,f] [double,boolean]
-        //
-        // Where:
-        // - The numeric values were drawn from 1-10000 in uniform distribution
-        // - Each stream has 3000000 tuples
-        //
-        // Predicate:
-        // R.x >= S.a-10 AND R.x <= S.a+10 AND
-        // R.y >= S.b-10 AND R.y <= S.b+10 AND
-        // S.c >= T.e-10 AND S.c <= T.e+10 AND
-        // S.d == T.f
-
-        PlanImpl plan = new PlanImpl(Experiment.WINDOW_SIZE);
+/**
+ * Band-join of three streams:
+ * R[x,y] [int,float]
+ * S[a,b,c,d] [int,float,double,boolean]
+ * T[e,f] [double,boolean]
+ * <p>
+ * Where:
+ * - The numeric values were drawn from 1-10000 in uniform distribution
+ * - Each stream has 3000000 tuples
+ * <p>
+ * Predicate:
+ * R.x >= S.a-10 AND R.x <= S.a+10 AND
+ * R.y >= S.b-10 AND R.y <= S.b+10 AND
+ * S.c >= T.e-10 AND S.c <= T.e+10 AND
+ * S.d == T.f
+ */
+class BandJoinExperiment extends AbstractExperiment {
+    BandJoinExperiment(long windowSize) {
+        PlanImpl plan = new PlanImpl(windowSize);
 
         plan.addParser(Stream.R, (s) -> new Object[]{Integer.parseInt(s[0]), Float.parseFloat(s[1])});
 
@@ -61,7 +62,6 @@ public class BandJoinExperiment extends Experiment {
                         (float) a.getAttribute(3) <= (float) b.getAttribute(1) + 10)
         );
 
-        // Run the experiment
-        (new BandJoinExperiment()).run(Integer.parseInt(args[0]), plan);
+        setPlan(plan);
     }
 }

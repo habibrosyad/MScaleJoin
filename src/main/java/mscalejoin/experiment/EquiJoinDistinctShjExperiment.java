@@ -5,25 +5,26 @@ import mscalejoin.common.Stream;
 import mscalejoin.shj.PlanImpl;
 import mscalejoin.shj.ProbeImpl;
 
-public class EquiJoinDistinctShjExperiment extends Experiment{
-    public static void main(String[] args) {
-        // Four streams:
-        // R[x,y] [int,int]
-        // S[a,b] [int,int]
-        // T[c,d] [int,int]
-        // U[e,f] [int,int]
-        //
-        // Where:
-        // - Keys drawn from 1-10000 distributed uniformly
-        // - Has some key duplications
-        // - Each stream has 3000000 data
-        //
-        // Predicate:
-        // R.x = S.a AND
-        // S.b = T.c AND
-        // T.d = U.e
-
-        PlanImpl plan = new PlanImpl(Experiment.WINDOW_SIZE);
+/**
+ * Equi-join of four streams with SHJ for distinct attributes:
+ * R[x,y] [int,int]
+ * S[a,b] [int,int]
+ * T[c,d] [int,int]
+ * U[e,f] [int,int]
+ * <p>
+ * Where:
+ * - Keys drawn from 1-10000 distributed uniformly
+ * - Has some key duplications
+ * - Each stream has 3000000 data
+ * <p>
+ * Predicate:
+ * R.x = S.a AND
+ * S.b = T.c AND
+ * T.d = U.e
+ */
+class EquiJoinDistinctShjExperiment extends AbstractExperiment {
+    EquiJoinDistinctShjExperiment(long windowSize) {
+        PlanImpl plan = new PlanImpl(windowSize);
 
         Parser parser = (s) -> new Integer[]{Integer.parseInt(s[0]), Integer.parseInt(s[1])};
 
@@ -51,8 +52,6 @@ public class EquiJoinDistinctShjExperiment extends Experiment{
 
         //plan.setExpectedOutput(300000);
 
-        // Run the experiment
-        (new EquiJoinCommonShjExperiment()).run(Integer.parseInt(args[0]), plan);
-        //(new EquiJoinCommonShjExperiment()).run(2, plan);
+        setPlan(plan);
     }
 }

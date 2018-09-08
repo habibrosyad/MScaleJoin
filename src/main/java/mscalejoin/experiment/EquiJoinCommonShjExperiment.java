@@ -6,31 +6,32 @@ import mscalejoin.common.Stream;
 import mscalejoin.shj.PlanImpl;
 import mscalejoin.shj.ProbeImpl;
 
-public class EquiJoinCommonShjExperiment extends Experiment {
+/**
+ * Equi-join of four streams with SHJ for common attributes:
+ * R[x,y] [int,int]
+ * S[x,b] [int,int]
+ * T[x,c] [int,int]
+ * U[x,d] [int,int]
+ * <p>
+ * Where:
+ * 1st dataset:
+ * - The join selectivity ratio is 0.1
+ * - Each stream has distinct join candidates (no duplication)
+ * - Each stream has 3000000 data
+ * <p>
+ * 2nd dataset:
+ * - Each stream may have duplicate keys
+ * - Each stream has 3000000 data
+ * <p>
+ * Predicate:
+ * R.x = S.x = T.x = U.x
+ */
+class EquiJoinCommonShjExperiment extends AbstractExperiment {
     private static final int COMMON_ATTRIBUTE = 0;
     private static final int NUMBER_OF_KEYS = 1;
 
-    public static void main(String[] args) {
-        // Four streams:
-        // R[x,y] [int,int]
-        // S[x,b] [int,int]
-        // T[x,c] [int,int]
-        // U[x,d] [int,int]
-        //
-        // Where:
-        // 1st dataset:
-        // - The join selectivity ratio is 0.1
-        // - Each stream has distinct join candidates (no duplication)
-        // - Each stream has 3000000 data
-        //
-        // 2nd dataset:
-        // - Each stream may have duplicate keys
-        // - Each stream has 3000000 data
-        //
-        // Predicate:
-        // R.x = S.x = T.x = U.x
-
-        PlanImpl plan = new PlanImpl(Experiment.WINDOW_SIZE);
+    EquiJoinCommonShjExperiment(long windowSize) {
+        PlanImpl plan = new PlanImpl(windowSize);
 
         Parser parser = (s) -> new Integer[]{Integer.parseInt(s[0]), Integer.parseInt(s[1])};
 
@@ -50,11 +51,9 @@ public class EquiJoinCommonShjExperiment extends Experiment {
         plan.addSource(Stream.U, NUMBER_OF_KEYS, probeT, probeS, probeR);
 
         // This is only for the 1st dataset
-        plan.setExpectedOutput(300000);
-        //plan.setExpectedOutput(10000);
+        //plan.setExpectedOutput(300000);
+        plan.setExpectedOutput(10000);
 
-        // Run the experiment
-        (new EquiJoinCommonShjExperiment()).run(Integer.parseInt(args[0]), plan);
-        //(new EquiJoinCommonShjExperiment()).run(2, plan);
+        setPlan(plan);
     }
 }

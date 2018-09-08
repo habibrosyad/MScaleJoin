@@ -5,25 +5,26 @@ import mscalejoin.common.Stream;
 import mscalejoin.nlj.ProbeImpl;
 import mscalejoin.nlj.PlanImpl;
 
-public class EquiJoinDistinctNljExperiment extends Experiment {
-    public static void main(String[] args) {
-        // Four streams:
-        // R[x,y] [int,int]
-        // S[a,b] [int,int]
-        // T[c,d] [int,int]
-        // U[e,f] [int,int]
-        //
-        // Where:
-        // - Keys drawn from 1-10000 distributed uniformly
-        // - Has some key duplications
-        // - Each stream has 3000000 data
-        //
-        // Predicate:
-        // R.x = S.a AND
-        // S.b = T.c AND
-        // T.d = U.e
-
-        PlanImpl plan = new PlanImpl(Experiment.WINDOW_SIZE);
+/**
+ * Equi-join of four streams with NLJ for distinct attributes:
+ * R[x,y] [int,int]
+ * S[a,b] [int,int]
+ * T[c,d] [int,int]
+ * U[e,f] [int,int]
+ * <p>
+ * Where:
+ * - Keys drawn from 1-10000 distributed uniformly
+ * - Has some key duplications
+ * - Each stream has 3000000 data
+ * <p>
+ * Predicate:
+ * R.x = S.a AND
+ * S.b = T.c AND
+ * T.d = U.e
+ */
+class EquiJoinDistinctNljExperiment extends AbstractExperiment {
+    EquiJoinDistinctNljExperiment(long windowSize) {
+        PlanImpl plan = new PlanImpl(windowSize);
 
         Parser parser = (s) -> new Integer[]{Integer.parseInt(s[0]), Integer.parseInt(s[1])};
 
@@ -51,7 +52,6 @@ public class EquiJoinDistinctNljExperiment extends Experiment {
 
         //plan.setExpectedOutput(300000);
 
-        // Run the experiment
-        (new EquiJoinDistinctNljExperiment()).run(Integer.parseInt(args[0]), plan);
+        setPlan(plan);
     }
 }

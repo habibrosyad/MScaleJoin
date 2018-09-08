@@ -36,8 +36,8 @@ public class PThread implements Runnable {
         barrier.decrementAndGet();
         while (barrier.get() != 0) ;
 
-        long start = System.nanoTime(); // For SHJ experiment only
-        while (true) {
+//        long start = System.nanoTime(); // For SHJ experiment only
+        while (!Stats.finished.get()) {
             // Get new tuple
             join((Tuple) sgin.getNextReadyTuple(id));
 
@@ -45,12 +45,12 @@ public class PThread implements Runnable {
             join(buffer.getNextReadyTuple(id, counter));
 
             // For SHJ experiment only
-            if (plan.getMethod() == Method.SHJ &&
-                    plan.getExpectedOutput() > 0 &&
-                    Stats.output.get() == plan.getExpectedOutput()) {
-                System.out.println("Finished in " + (System.nanoTime() - start) / 1000000 + "ms");
-                break;
-            }
+//            if (plan.getMethod() == Method.SHJ &&
+//                    plan.getExpectedOutput() > 0 &&
+//                    Stats.output.get() == plan.getExpectedOutput()) {
+//                System.out.println("Finished in " + (System.nanoTime() - start) / 1000000 + "ms");
+//                break;
+//            }
         }
     }
 

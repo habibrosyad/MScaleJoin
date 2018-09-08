@@ -1,12 +1,17 @@
 package mscalejoin.experiment;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Collecting stats for measuring performance during an experiment.
+ */
 public class Stats {
     private static final long WAIT_TIME = 20000;
     public static final AtomicLong comparison = new AtomicLong();
     public static final AtomicLong output = new AtomicLong();
+    public static final AtomicBoolean finished = new AtomicBoolean();
 
     static void run(AtomicInteger barrier) {
         new Thread(() -> {
@@ -17,11 +22,15 @@ public class Stats {
                 Thread.sleep(WAIT_TIME);
 
                 // Print report
+                System.out.println("ELAPSED=" + WAIT_TIME / 1000 + "s");
                 System.out.println("OUTPUT_TOTAL=" + output.get());
-                System.out.println("OUTPUT/s=" + output.get()/(WAIT_TIME/1000));
+                System.out.println("OUTPUT/s=" + output.get() / (WAIT_TIME / 1000));
                 System.out.println("COMPARISON_TOTAL=" + comparison.get());
-                System.out.println("COMPARISON/s=" + comparison.get()/(WAIT_TIME/1000));
+                System.out.println("COMPARISON/s=" + comparison.get() / (WAIT_TIME / 1000));
                 System.out.println();
+
+                // Set to finish
+                finished.set(true);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
