@@ -18,7 +18,7 @@ public interface Plan {
 
     Map<Stream, Window> createWindows();
 
-    void setExpectedOutput(long expectedOutput);
-
-    long getExpectedOutput();
+//    void setExpectedOutput(long expectedOutput);
+//
+//    long getExpectedOutput();
 }

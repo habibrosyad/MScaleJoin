@@ -10,7 +10,7 @@ public class PlanImpl implements Plan {
     private final Map<Stream, Parser> parsers;
     private final List<Stream> sources;
     private final long windowSize;
-    private long expectedOutput;
+//    private long expectedOutput;
 
     public PlanImpl(long windowSize) {
         sources = new ArrayList<>();
@@ -67,13 +67,13 @@ public class PlanImpl implements Plan {
         return Method.SHJ;
     }
 
-    @Override
-    public void setExpectedOutput(long expectedOutput) {
-        this.expectedOutput = expectedOutput;
-    }
-
-    @Override
-    public long getExpectedOutput() {
-        return expectedOutput;
-    }
+//    @Override
+//    public void setExpectedOutput(long expectedOutput) {
+//        this.expectedOutput = expectedOutput;
+//    }
+//
+//    @Override
+//    public long getExpectedOutput() {
+//        return expectedOutput;
+//    }
 }

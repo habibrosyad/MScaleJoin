@@ -51,8 +51,8 @@ class EquiJoinCommonShjExperiment extends AbstractExperiment {
         plan.addSource(Stream.U, NUMBER_OF_KEYS, probeT, probeS, probeR);
 
         // This is only for the 1st dataset
-        //plan.setExpectedOutput(300000);
-        plan.setExpectedOutput(10000);
+//        plan.setExpectedOutput(300000);
+//        plan.setExpectedOutput(10000);
 
         setPlan(plan);
     }

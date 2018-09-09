@@ -71,7 +71,7 @@ public class BufferTest {
 
         @Override
         public void run() {
-            //Make sure the system is correctly initialized, i.e. one tuple from each producer exists
+            // Make sure the system is correctly initialized, i.e. one tuple from each producer exists
             barrier.getAndDecrement();
             while (barrier.get() != 0) ;
 

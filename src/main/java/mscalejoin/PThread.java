@@ -74,11 +74,13 @@ public class PThread implements Runnable {
             // Increase stats for comparison
             switch (plan.getMethod()) {
                 case NLJ:
+                    // NLJ scan all window contents
                     Stats.comparison.addAndGet(window.size());
-                    break; // NLJ scan all window contents
+                    break;
                 case SHJ:
+                    // SHJ just probe once
                     Stats.comparison.incrementAndGet();
-                    break; // SHJ just probe once
+                    break;
             }
 
             // ProbeImpl targetWindow and join
@@ -92,7 +94,8 @@ public class PThread implements Runnable {
                         buffer.addTuple(newTuple);
                     } else {
                         Stats.output.incrementAndGet(); // Increase stats
-                        //sgout.addTuple(newTuple, id);
+                        Stats.initialResponse.compareAndSet(0, System.nanoTime()); // Record initial response
+//                        sgout.addTuple(newTuple, id);
                     }
                 }
             }

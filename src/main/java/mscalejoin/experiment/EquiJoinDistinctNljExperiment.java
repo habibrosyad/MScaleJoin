@@ -50,7 +50,7 @@ class EquiJoinDistinctNljExperiment extends AbstractExperiment {
                 new ProbeImpl(Stream.S, (a, b) -> (int) a.getAttribute(2) == (int) b.getAttribute(1)),
                 new ProbeImpl(Stream.R, (a, b) -> (int) a.getAttribute(4) == (int) b.getAttribute(0)));
 
-        //plan.setExpectedOutput(300000);
+//        plan.setExpectedOutput(300000);
 
         setPlan(plan);
     }

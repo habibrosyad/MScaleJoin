@@ -12,7 +12,7 @@ public class WindowImplTest {
 
     public static void main(String[] args) {
         // Window with 2 join attributes
-        // Window window = new WindowImpl(0, 2);
+//        Window window = new WindowImpl(0, 2);
         Window window = new WindowImpl(0);
 
         // Prepare tuples
@@ -40,7 +40,7 @@ public class WindowImplTest {
         start = System.nanoTime();
 
         Probe probe = new ProbeImpl(Stream.R, (a, b) -> a.getAttribute(1) == b.getAttribute(1));
-        //Probe probe = new ProbeImpl('t',1,1);
+//        Probe probe = new ProbeImpl('t',1,1);
         int sum = 0;
         for (char c : alphabet.toCharArray()) {
             Tuple tuple = new Tuple(0, Stream.R, new Object[]{1, c}, 0);

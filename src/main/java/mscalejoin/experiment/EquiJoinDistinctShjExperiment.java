@@ -50,7 +50,7 @@ class EquiJoinDistinctShjExperiment extends AbstractExperiment {
                 new ProbeImpl(Stream.S, 1, 2),
                 new ProbeImpl(Stream.R, 0, 4));
 
-        //plan.setExpectedOutput(300000);
+//        plan.setExpectedOutput(300000);
 
         setPlan(plan);
     }

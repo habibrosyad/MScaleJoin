@@ -50,7 +50,7 @@ class EquiJoinCommonNljExperiment extends AbstractExperiment {
         plan.addSource(Stream.U, probeT, probeS, probeR);
 
         // This is only for the 1st dataset
-        plan.setExpectedOutput(300000);
+//        plan.setExpectedOutput(300000);
 
         setPlan(plan);
     }

@@ -83,15 +83,15 @@ abstract class AbstractExperiment {
 
         @Override
         public void run() {
-            //Make sure the system is correctly initialized, i.e. one tuple from each producer exists
+            // Make sure the system is correctly initialized, i.e. one tuple from each producer exists
             barrier.decrementAndGet();
             while (barrier.get() != 0) ;
 
-            //long start = System.nanoTime();
-            //Read local file of the stream
+//            long start = System.nanoTime();
+            // Read local file of the stream
             Stream source = plan.getSources().get(id);
-            String filename = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/shj/1000000/" + source;
-            //String filename = source.toString();
+//            String filename = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/shj/1000000/" + source;
+            String filename = source.toString();
             int timestamp = 0;
             try {
                 Scanner scanner = new Scanner(new File(filename));
@@ -108,7 +108,7 @@ abstract class AbstractExperiment {
             // Add poison
             sgin.addTuple(new Tuple(timestamp, source, null, 0), id);
 
-            //System.out.println("Finish with " + id + " total " + timestamp + " in " + (System.nanoTime() - start) / 1000000 + "ms");
+//            System.out.println("Finish with " + id + " total " + timestamp + " in " + (System.nanoTime() - start) / 1000000 + "ms");
         }
     }
 }
