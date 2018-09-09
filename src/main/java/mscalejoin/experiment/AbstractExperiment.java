@@ -14,14 +14,18 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 abstract class AbstractExperiment {
+    private String path = "";
     private Plan plan;
 
     void setPlan(Plan plan) {
         this.plan = plan;
     }
 
-    void run(int numberOfConsumers) {
+    void run(int numberOfConsumers, String path) {
         int numberOfProducers = plan.getSources().size();
+
+        // Dataset default path
+        this.path = path;
 
         ScaleGate sgin = new ScaleGateImpl(10, numberOfProducers, numberOfConsumers);
         ScaleGate sgout = new ScaleGateImpl(10, numberOfConsumers, 1);
@@ -91,7 +95,7 @@ abstract class AbstractExperiment {
             // Read local file of the stream
             Stream source = plan.getSources().get(id);
 //            String filename = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/shj/1000000/" + source;
-            String filename = source.toString();
+            String filename = path + source.toString();
             int timestamp = 0;
             try {
                 Scanner scanner = new Scanner(new File(filename));

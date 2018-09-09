@@ -14,9 +14,10 @@ public class Experiment {
     public static void main(String[] args) {
         int code, numberOfThreads;
         long windowSize;
+        String path = ""; // Dataset path
         AbstractExperiment experiment;
 
-        if (args.length < 3) {
+        if (args.length < 4) {
             // Default values
             code = -1;
             numberOfThreads = 2;
@@ -25,6 +26,7 @@ public class Experiment {
             code = Integer.parseInt(args[0]);
             numberOfThreads = Integer.parseInt(args[1]);
             windowSize = Long.parseLong(args[2]);
+            path = args[3];
         }
 
         switch (code) {
@@ -48,6 +50,6 @@ public class Experiment {
                 break;
         }
 
-        experiment.run(numberOfThreads);
+        experiment.run(numberOfThreads, path);
     }
 }
