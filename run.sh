@@ -58,3 +58,10 @@ for id in "${!experiments[@]}"; do
 	
 	echo -e "EXPERIMENT $id FINISH\n" >> $output
 done
+
+# Send mail as notification that the task is finished. 
+# This assume that 'mail' is intalled and configured.
+ip=`hostname -I`
+echo "MScaleJoin experiment is done on $ip" | mail -s "MScaleJoin Experiment on $ip" habib.ryd@gmail.com
+
+
