@@ -46,7 +46,7 @@ for id in "${!experiments[@]}"; do
 		# [algorithm,experiment,cpus,elapsed_s,initial_response_ms,output_total,output_s,comparison_total,comparison_s]
 
 		for (( i=0; i<$n_trials; i++ )); do
-			echo -n "MScaleJoin,${id},${n}" >> 
+			echo -n "MScaleJoin,${id},${n}," >> $output
 			java -jar MScaleJoin.jar $code $n 4000000 $local_data_path >> $output
 			sleep 2
 		done
