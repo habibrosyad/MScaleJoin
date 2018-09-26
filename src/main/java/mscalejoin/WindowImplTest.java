@@ -7,12 +7,13 @@ import mscalejoin.common.Window;
 import mscalejoin.nlj.ProbeImpl;
 import mscalejoin.nlj.WindowImpl;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class WindowImplTest {
     private static final int TEST_SIZE = 1000000;
 
     public static void main(String[] args) {
         // Window with 2 join attributes
-//        Window window = new WindowImpl(0, 2);
         Window window = new WindowImpl(0);
 
         // Prepare tuples
@@ -40,16 +41,17 @@ public class WindowImplTest {
         start = System.nanoTime();
 
         Probe probe = new ProbeImpl(Stream.R, (a, b) -> a.getAttribute(1) == b.getAttribute(1));
-//        Probe probe = new ProbeImpl('t',1,1);
-        int sum = 0;
+        AtomicInteger sum = new AtomicInteger();
         for (char c : alphabet.toCharArray()) {
             Tuple tuple = new Tuple(0, Stream.R, new Object[]{1, c}, 0);
-            sum += window.probe(tuple, probe).size();
+            window.probe(tuple, probe, (match) -> {
+                sum.incrementAndGet();
+            });
         }
 
         System.out.println("Probing finished in " + (System.nanoTime() - start) / 1000000 + "ms");
 
-        assert sum == TEST_SIZE : "Got " + sum + " instead of " + TEST_SIZE;
+        assert sum.get() == TEST_SIZE : "Got " + sum + " instead of " + TEST_SIZE;
 
         // Measure expiration performance
         start = System.nanoTime();

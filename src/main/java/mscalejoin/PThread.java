@@ -36,21 +36,12 @@ public class PThread implements Runnable {
         barrier.decrementAndGet();
         while (barrier.get() != 0) ;
 
-//        long start = System.nanoTime(); // For SHJ experiment only
-        while (!Stats.finished.get()) {
+        while (!Stats.isDone()) {
             // Get new tuple
             join((Tuple) sgin.getNextReadyTuple(id));
 
             // Get intermediate results from buffer (transient)
             join(buffer.getNextReadyTuple(id, counter));
-
-            // For SHJ experiment only
-//            if (plan.getMethod() == Method.SHJ &&
-//                    plan.getExpectedOutput() > 0 &&
-//                    Stats.output.get() == plan.getExpectedOutput()) {
-//                System.out.println("Finished in " + (System.nanoTime() - start) / 1000000 + "ms");
-//                break;
-//            }
         }
     }
 
@@ -58,7 +49,6 @@ public class PThread implements Runnable {
         if (tuple != null) {
             Probe probe = plan.getNextProbe(tuple);
             Window window = windows.get(probe.getTarget());
-            Tuple newTuple;
 
             // Add tuple to its window only if it is a base tuple (not an intermediate)
             if (tuple.getProbeId() == 0) {
@@ -66,38 +56,56 @@ public class PThread implements Runnable {
                 if (counter % numberOfThreads == id) {
                     windows.get(tuple.getSource()).insert(tuple);
                 }
+                // Increase number of processed tuples
+                Stats.incrementProcessed();
             }
 
             // Expire invalid tuples in the target window
             window.expire(tuple.getTimestamp());
 
-            // Increase stats for comparison
-            switch (plan.getMethod()) {
-                case NLJ:
-                    // NLJ scan all window contents
-                    Stats.comparison.addAndGet(window.size());
-                    break;
-                case SHJ:
-                    // SHJ just probe once
-                    Stats.comparison.incrementAndGet();
-                    break;
-            }
+            // Probe targetWindow and join
+//            for (Tuple match : window.probe(tuple, probe)) {
+//                if (tuple.compareCounterTo(match) == 1) {
+//                    // Merge tuple
+//                    newTuple = tuple.merge(match);
+//
+//                    if (plan.hasNextProbe(tuple)) {
+//                        // Place new tuple into buffer
+//                        buffer.addTuple(newTuple);
+//                    } else {
+//                        // Period between the tuple enter the system until produce an output
+//                        //Stats.addLatency(System.currentTimeMillis() - newTuple.getTimestamp());
+//                        sgout.addTuple(newTuple, id);
+//                    }
+//                }
+//            }
 
-            // ProbeImpl targetWindow and join
-            for (Tuple match : window.probe(tuple, probe)) {
+            window.probe(tuple, probe, (match) -> {
                 if (tuple.compareCounterTo(match) == 1) {
                     // Merge tuple
-                    newTuple = tuple.merge(match);
+                    Tuple newTuple = tuple.merge(match);
 
                     if (plan.hasNextProbe(tuple)) {
                         // Place new tuple into buffer
                         buffer.addTuple(newTuple);
                     } else {
-                        Stats.output.incrementAndGet(); // Increase stats
-                        Stats.initialResponse.compareAndSet(0, System.nanoTime()); // Record initial response
-//                        sgout.addTuple(newTuple, id);
+                        // Period between the tuple enter the system until produce an output
+                        //Stats.addLatency(System.currentTimeMillis() - newTuple.getTimestamp());
+                        sgout.addTuple(newTuple, id);
                     }
                 }
+            });
+
+            // Increase stats for comparison
+            switch (plan.getMethod()) {
+                case NLJ:
+                    // NLJ scan all window contents
+                    Stats.addComparison(window.size());
+                    break;
+                case SHJ:
+                    // SHJ just probe once
+                    Stats.incrementComparison();
+                    break;
             }
         }
     }

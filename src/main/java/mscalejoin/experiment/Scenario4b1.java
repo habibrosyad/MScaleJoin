@@ -6,24 +6,10 @@ import mscalejoin.nlj.ProbeImpl;
 import mscalejoin.nlj.PlanImpl;
 
 /**
- * Equi-join of four streams with NLJ for distinct attributes:
- * R[x,y] [int,int]
- * S[a,b] [int,int]
- * T[c,d] [int,int]
- * U[e,f] [int,int]
- * <p>
- * Where:
- * - Keys drawn from 1-10000 distributed uniformly
- * - Has some key duplications
- * - Each stream has 3000000 data
- * <p>
- * Predicate:
- * R.x = S.a AND
- * S.b = T.c AND
- * T.d = U.e
+ * Equi-join with 4 streams, join on distinct key and using NLJ
  */
-class EquiJoinDistinctNljExperiment extends AbstractExperiment {
-    EquiJoinDistinctNljExperiment(long windowSize) {
+class Scenario4b1 extends AbstractExperiment {
+    Scenario4b1(long windowSize) {
         PlanImpl plan = new PlanImpl(windowSize);
 
         Parser parser = (s) -> new Integer[]{Integer.parseInt(s[0]), Integer.parseInt(s[1])};
@@ -49,8 +35,6 @@ class EquiJoinDistinctNljExperiment extends AbstractExperiment {
                 new ProbeImpl(Stream.T, (a, b) -> (int) a.getAttribute(0) == (int) b.getAttribute(1)),
                 new ProbeImpl(Stream.S, (a, b) -> (int) a.getAttribute(2) == (int) b.getAttribute(1)),
                 new ProbeImpl(Stream.R, (a, b) -> (int) a.getAttribute(4) == (int) b.getAttribute(0)));
-
-//        plan.setExpectedOutput(300000);
 
         setPlan(plan);
     }

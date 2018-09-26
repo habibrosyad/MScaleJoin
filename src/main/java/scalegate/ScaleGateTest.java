@@ -25,6 +25,7 @@
 package scalegate;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ScaleGateTest {
 
@@ -33,6 +34,7 @@ public class ScaleGateTest {
 
     static ScaleGate tgate;
     static AtomicInteger barrier;
+    static AtomicLong counter;
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -42,6 +44,7 @@ public class ScaleGateTest {
 
         tgate = new ScaleGateImpl(4, PRODUCERS, CONSUMERS);
         barrier = new AtomicInteger(PRODUCERS + CONSUMERS);
+        counter = new AtomicLong();
 
         System.out.println(" Hello world! Starting threads...");
         Thread[] producers = new Thread[PRODUCERS];
@@ -69,6 +72,8 @@ public class ScaleGateTest {
         for (Thread t : consumers) {
             t.join();
         }
+
+        System.out.println(counter.get()/CONSUMERS);
 
         System.out.println("Done!");
     }
@@ -126,6 +131,7 @@ public class ScaleGateTest {
             while (true) {
                 cur = tgate.getNextReadyTuple(id);
                 if (cur != null) {
+                    counter.incrementAndGet();
                     assert (prev.getTimestamp() + 1 == cur.getTimestamp());
                     sum += cur.getTimestamp();
 

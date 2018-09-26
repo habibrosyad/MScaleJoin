@@ -8,48 +8,90 @@ import java.util.concurrent.atomic.AtomicLong;
  * Collecting stats for measuring performance during an experiment.
  */
 public class Stats {
-    public static final AtomicLong initialResponse = new AtomicLong(); // In nanos
-    public static final AtomicLong comparison = new AtomicLong();
-    public static final AtomicLong output = new AtomicLong();
-    public static final AtomicBoolean finished = new AtomicBoolean();
+    private static final String separator = ",";
+    private static final AtomicLong latency = new AtomicLong(); // Sum of latency
+    private static final AtomicLong processed = new AtomicLong(); // Tuple processed
+    private static final AtomicLong comparison = new AtomicLong();
+    private static final AtomicLong output = new AtomicLong();
+    private static final AtomicBoolean enabled = new AtomicBoolean();
+    private static final AtomicBoolean done = new AtomicBoolean();
 
-    static void run(AtomicInteger barrier) {
+    static void run(AtomicInteger barrier, int numberOfThreads, long windowSize, int rate) {
         new Thread(() -> {
-            long start, elapsed;
 
             barrier.decrementAndGet();
             while (barrier.get() != 0) ;
 
-            start = System.nanoTime();
-
             try {
-                Thread.sleep(20000); // 20 seconds
+                // Warming up, up to the length of the window
+                Thread.sleep(windowSize);
+
+                // Measure for 10 times
+                for (int i = 0; i < 5; i++) {
+                    enabled.set(true);
+
+                    // Measure stats for 10s
+                    Thread.sleep(10000);
+                    enabled.set(false);
+
+                    // Produce CSV like data to ease the analysis
+                    // [trial_id, threads, window_ms, rate_s,
+                    // latency_ms, processed_s, output_s, comparison_s, comparison_avg_s]
+                    System.out.println(i + separator +
+                            numberOfThreads + separator +
+                            windowSize + separator +
+                            rate + separator +
+                            latency.get() / (output.get() > 0 ? output.get() : 1) + separator +
+                            processed.get() / 10 + separator +
+                            output.get() / 10 + separator +
+                            comparison.get() / 10 + separator +
+                            comparison.get() / 10 / numberOfThreads
+                    );
+
+                    // Add delay of 1s between trials
+                    Thread.sleep(1000);
+
+                    // Reset stats for the next measurement
+                    latency.set(0);
+                    processed.set(0);
+                    comparison.set(0);
+                    output.set(0);
+                }
 
                 // Set to finish, kill all threads
-                finished.set(true);
-                elapsed = (System.nanoTime() - start) / 1000000000; // In seconds
-
-                // Print report
-//                System.out.println("ELAPSED=" + elapsed + "s");
-//                System.out.println("INITIAL_RESPONSE=" + (initialResponse.get() - start) / 1000000 + "ms");
-//                System.out.println("OUTPUT_TOTAL=" + output.get());
-//                System.out.println("OUTPUT/s=" + output.get() / elapsed);
-//                System.out.println("COMPARISON_TOTAL=" + comparison.get());
-//                System.out.println("COMPARISON/s=" + comparison.get() / elapsed);
-//                System.out.println();
-
-                // Produce CSV like data to ease the analysis
-                // [elapsed_s, initial_response_ms, output_total, output_s, comparison_total, comparison_s]
-                System.out.println(elapsed + "," +
-                        (initialResponse.get() - start) / 1000000 + "," +
-                        output.get() + "," +
-                        output.get() / elapsed + "," +
-                        comparison.get() + "," +
-                        comparison.get() / elapsed
-                );
+                done.set(true);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
         }).start();
+    }
+
+    static void addLatency(long delta) {
+        if (enabled.get()) {
+            latency.addAndGet(delta);
+            output.incrementAndGet();
+        }
+    }
+
+    public static void incrementProcessed() {
+        if (enabled.get()) {
+            processed.incrementAndGet();
+        }
+    }
+
+    public static void incrementComparison() {
+        if (enabled.get()) {
+            comparison.incrementAndGet();
+        }
+    }
+
+    public static void addComparison(long delta) {
+        if (enabled.get()) {
+            comparison.addAndGet(delta);
+        }
+    }
+
+    public static boolean isDone() {
+        return done.get();
     }
 }

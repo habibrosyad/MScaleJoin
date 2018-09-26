@@ -14,33 +14,43 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 abstract class AbstractExperiment {
-    private String path = "";
+    private String path;
     private Plan plan;
+    private int rate;
+    private AtomicInteger barrier;
+    private ScaleGate sgin, sgout;
 
     void setPlan(Plan plan) {
         this.plan = plan;
     }
 
-    void run(int numberOfConsumers, String path) {
+    void setPath(String path) {
+        this.path = path;
+    }
+
+    void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    void run(int numberOfConsumers) {
         int numberOfProducers = plan.getSources().size();
 
-        // Dataset default path
-        this.path = path;
+        sgin = new ScaleGateImpl(10, numberOfProducers, numberOfConsumers);
+        sgout = new ScaleGateImpl(10, numberOfConsumers, 1);
 
-        ScaleGate sgin = new ScaleGateImpl(10, numberOfProducers, numberOfConsumers);
-        ScaleGate sgout = new ScaleGateImpl(10, numberOfConsumers, 1);
+        // + 1 for the stats thread and + 1 for the output thread
+        barrier = new AtomicInteger(numberOfProducers + numberOfConsumers + 2);
 
-        // + 1 for the stats thread
-        AtomicInteger barrier = new AtomicInteger(numberOfProducers + numberOfConsumers + 1);
+        Stats.run(barrier, numberOfConsumers, plan.getWindowSize(), rate);
 
-        Stats.run(barrier);
+        new Thread(new OutputReader()).start();
 
         Buffer buffer = new Buffer(numberOfConsumers);
         Thread[] producers = new Thread[numberOfProducers];
         Thread[] consumers = new Thread[numberOfConsumers];
 
         for (int i = 0; i < numberOfProducers; i++) {
-            producers[i] = new Thread(new Producer(i, sgin, barrier, plan));
+            producers[i] = new Thread(new Producer(i));
         }
 
         for (int i = 0; i < numberOfConsumers; i++) {
@@ -74,15 +84,9 @@ abstract class AbstractExperiment {
      */
     private class Producer implements Runnable {
         private final int id;
-        private final AtomicInteger barrier;
-        private final Plan plan;
-        private final ScaleGate sgin;
 
-        Producer(int id, ScaleGate sgin, AtomicInteger barrier, Plan plan) {
+        Producer(int id) {
             this.id = id;
-            this.sgin = sgin;
-            this.barrier = barrier;
-            this.plan = plan;
         }
 
         @Override
@@ -91,28 +95,56 @@ abstract class AbstractExperiment {
             barrier.decrementAndGet();
             while (barrier.get() != 0) ;
 
-//            long start = System.nanoTime();
+            // For rate control
+            long before = 0;
+            float ahead = 0;
+
             // Read local file of the stream
             Stream source = plan.getSources().get(id);
-//            String filename = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/shj/1000000/" + source;
             String filename = path + source.toString();
-            int timestamp = 0;
+
             try {
                 Scanner scanner = new Scanner(new File(filename));
 
-                while (scanner.hasNextLine() && !Stats.finished.get()) {
-                    Tuple newTuple = new Tuple(timestamp++, source,
+                while (scanner.hasNextLine() && !Stats.isDone()) {
+                    Tuple newTuple = new Tuple(System.currentTimeMillis(), source,
                             plan.parse(source, scanner.nextLine().trim().split("\\s+")), 0);
                     sgin.addTuple(newTuple, id);
+
+                    // Rate control
+                    long now = System.nanoTime() / 1000000L;
+                    if (before != 0) {
+                        ahead -= (float) (now - before) / 1000 * rate - 1;
+                        if (ahead > 0) {
+                            Thread.sleep((long) (ahead / rate * 1000));
+                        }
+                    }
+                    before = now;
                 }
             } catch (FileNotFoundException e) {
                 System.out.println(filename + " not found");
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
             }
 
             // Add poison
-            sgin.addTuple(new Tuple(timestamp, source, null, 0), id);
+            sgin.addTuple(new Tuple(System.currentTimeMillis(), source, null, 0), id);
+        }
+    }
 
-//            System.out.println("Finish with " + id + " total " + timestamp + " in " + (System.nanoTime() - start) / 1000000 + "ms");
+    private class OutputReader implements Runnable {
+        @Override
+        public void run() {
+            barrier.decrementAndGet();
+            while (barrier.get() != 0) ;
+
+            while (!Stats.isDone()) {
+                Tuple tuple = (Tuple) sgout.getNextReadyTuple(0);
+                if (tuple != null) {
+                    // Period between the tuple enter the system until produce an output
+                    Stats.addLatency(System.currentTimeMillis() - tuple.getTimestamp());
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package mscalejoin.nlj;
 
+import mscalejoin.common.Joiner;
 import mscalejoin.common.Probe;
 import mscalejoin.common.Tuple;
 import mscalejoin.common.Window;
@@ -18,18 +19,29 @@ public class WindowImpl implements Window {
         internal = new LinkedList<>();
     }
 
+//    @Override
+//    public List<Tuple> probe(Tuple tuple, Probe probe) {
+//        List<Tuple> result = new ArrayList<>();
+//        Predicate predicate = ((ProbeImpl) probe).getPredicate();
+//
+//        for (Tuple member : internal) {
+//            if (predicate.compare(tuple, member)) {
+//                result.add(member);
+//            }
+//        }
+//
+//        return result;
+//    }
+
     @Override
-    public List<Tuple> probe(Tuple tuple, Probe probe) {
-        List<Tuple> result = new ArrayList<>();
+    public void probe(Tuple tuple, Probe probe, Joiner joiner) {
         Predicate predicate = ((ProbeImpl) probe).getPredicate();
 
         for (Tuple member : internal) {
             if (predicate.compare(tuple, member)) {
-                result.add(member);
+                joiner.join(member);
             }
         }
-
-        return result;
     }
 
     @Override

@@ -5,7 +5,7 @@ public interface Parser {
     /**
      * Parse raw stream data.
      *
-     * @param s splitting of raw stream data
+     * @param s split results of raw stream data
      * @return converted results of s based on the parser
      */
     Object[] parse(String[] s);

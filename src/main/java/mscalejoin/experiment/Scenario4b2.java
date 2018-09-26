@@ -6,24 +6,10 @@ import mscalejoin.shj.PlanImpl;
 import mscalejoin.shj.ProbeImpl;
 
 /**
- * Equi-join of four streams with SHJ for distinct attributes:
- * R[x,y] [int,int]
- * S[a,b] [int,int]
- * T[c,d] [int,int]
- * U[e,f] [int,int]
- * <p>
- * Where:
- * - Keys drawn from 1-10000 distributed uniformly
- * - Has some key duplications
- * - Each stream has 3000000 data
- * <p>
- * Predicate:
- * R.x = S.a AND
- * S.b = T.c AND
- * T.d = U.e
+ * Equi-join with 4 streams, join on distinct key and using SHJ
  */
-class EquiJoinDistinctShjExperiment extends AbstractExperiment {
-    EquiJoinDistinctShjExperiment(long windowSize) {
+class Scenario4b2 extends AbstractExperiment {
+    Scenario4b2(long windowSize) {
         PlanImpl plan = new PlanImpl(windowSize);
 
         Parser parser = (s) -> new Integer[]{Integer.parseInt(s[0]), Integer.parseInt(s[1])};
@@ -49,8 +35,6 @@ class EquiJoinDistinctShjExperiment extends AbstractExperiment {
                 new ProbeImpl(Stream.T, 1, 0),
                 new ProbeImpl(Stream.S, 1, 2),
                 new ProbeImpl(Stream.R, 0, 4));
-
-//        plan.setExpectedOutput(300000);
 
         setPlan(plan);
     }
