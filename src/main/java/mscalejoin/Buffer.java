@@ -31,7 +31,7 @@ public class Buffer {
         }
     }
 
-    Tuple getNextReadyTuple(int id, int counter) {
+    Tuple getNextTuple(int id, int counter) {
         BufferNode next = readers[id].localHead.getNext();
 
         if (next != null && next.getTuple().compareCounterTo(counter) <= 0) {

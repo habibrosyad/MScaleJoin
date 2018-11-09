@@ -13,10 +13,10 @@ public class Experiment {
         if (args.length < 5) {
             // Default values for basic testing
             code = -1;
-            numberOfThreads = 4;
+            numberOfThreads = 1;
             rate = 1000; // 1000 t/s
-            windowSize = 20000; // 20s
-            path = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/shj/1000000/";
+            windowSize = 60000; // 20s
+            path = "/Users/habib.rosyad/sandbox/MScaleJoin/dataset/scenario4/3000000/";
         } else {
             code = Integer.parseInt(args[0]);
             numberOfThreads = Integer.parseInt(args[1]);
@@ -48,7 +48,7 @@ public class Experiment {
                 experiment = new Scenario4b2(windowSize);
                 break;
             default:
-                experiment = new Scenario4a2(windowSize);
+                experiment = new Scenario4b2(windowSize);
                 break;
         }
 

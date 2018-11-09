@@ -73,14 +73,14 @@ class Scenario3 extends AbstractExperiment {
                         (float) a.getAttribute(0) <= (float) b.getAttribute(2) + 10 &&
                         (int) a.getAttribute(1) >= (int) b.getAttribute(3) - 10 &&
                         (int) a.getAttribute(1) <= (int) b.getAttribute(3) + 10),
-                new ProbeImpl(Stream.S, (a, b) -> (double) a.getAttribute(0) >= (double) b.getAttribute(2) - 10 &&
-                        (double) a.getAttribute(0) <= (double) b.getAttribute(2) + 10 &&
-                        (int) a.getAttribute(1) >= (int) b.getAttribute(3) - 10 &&
-                        (int) a.getAttribute(1) <= (int) b.getAttribute(3) + 10),
-                new ProbeImpl(Stream.R, (a, b) -> (int) a.getAttribute(2) >= (int) b.getAttribute(0) - 10 &&
-                        (int) a.getAttribute(2) <= (int) b.getAttribute(0) + 10 &&
-                        (float) a.getAttribute(3) >= (float) b.getAttribute(1) - 10 &&
-                        (float) a.getAttribute(3) <= (float) b.getAttribute(1) + 10)
+                new ProbeImpl(Stream.S, (a, b) -> (double) a.getAttribute(2) >= (double) b.getAttribute(2) - 10 &&
+                        (double) a.getAttribute(2) <= (double) b.getAttribute(2) + 10 &&
+                        (int) a.getAttribute(3) >= (int) b.getAttribute(3) - 10 &&
+                        (int) a.getAttribute(3) <= (int) b.getAttribute(3) + 10),
+                new ProbeImpl(Stream.R, (a, b) -> (int) a.getAttribute(6) >= (int) b.getAttribute(0) - 10 &&
+                        (int) a.getAttribute(6) <= (int) b.getAttribute(0) + 10 &&
+                        (float) a.getAttribute(7) >= (float) b.getAttribute(1) - 10 &&
+                        (float) a.getAttribute(7) <= (float) b.getAttribute(1) + 10)
         );
 
         setPlan(plan);

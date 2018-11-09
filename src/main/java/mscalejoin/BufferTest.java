@@ -78,7 +78,7 @@ public class BufferTest {
             int sum = 0;
 
             while (true) {
-                Tuple cur = buffer.getNextReadyTuple(id, sum);
+                Tuple cur = buffer.getNextTuple(id, sum);
                 if (cur != null) {
                     sum++;
 

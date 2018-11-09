@@ -41,7 +41,7 @@ public class PThread implements Runnable {
             join((Tuple) sgin.getNextReadyTuple(id));
 
             // Get intermediate results from buffer (transient)
-            join(buffer.getNextReadyTuple(id, counter));
+            join(buffer.getNextTuple(id, counter));
         }
     }
 
@@ -62,23 +62,6 @@ public class PThread implements Runnable {
 
             // Expire invalid tuples in the target window
             window.expire(tuple.getTimestamp());
-
-            // Probe targetWindow and join
-//            for (Tuple match : window.probe(tuple, probe)) {
-//                if (tuple.compareCounterTo(match) == 1) {
-//                    // Merge tuple
-//                    newTuple = tuple.merge(match);
-//
-//                    if (plan.hasNextProbe(tuple)) {
-//                        // Place new tuple into buffer
-//                        buffer.addTuple(newTuple);
-//                    } else {
-//                        // Period between the tuple enter the system until produce an output
-//                        //Stats.addLatency(System.currentTimeMillis() - newTuple.getTimestamp());
-//                        sgout.addTuple(newTuple, id);
-//                    }
-//                }
-//            }
 
             window.probe(tuple, probe, (match) -> {
                 if (tuple.compareCounterTo(match) == 1) {

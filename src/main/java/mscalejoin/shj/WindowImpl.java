@@ -23,13 +23,6 @@ public class WindowImpl implements Window {
         }
     }
 
-//    @Override
-//    public List<Tuple> probe(Tuple tuple, Probe probe) {
-//        int source = ((ProbeImpl) probe).getSourceAttribute();
-//        int target = ((ProbeImpl) probe).getTargetAttribute();
-//        return internal.get(target).get(tuple.getAttribute(source));
-//    }
-
     @Override
     public void probe(Tuple tuple, Probe probe, Joiner joiner) {
         int source = ((ProbeImpl) probe).getSourceAttribute();
